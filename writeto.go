@@ -3,6 +3,7 @@ package mail
 import (
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"io"
 	"mime"
 	"mime/multipart"
@@ -12,13 +13,32 @@ import (
 )
 
 // WriteTo implements io.WriterTo. It dumps the whole message into w.
-func (m *Message) WriteTo(w io.Writer) (int64, error) {
+func (m *Message) WriteTo(w io.Writer) (n int64, err error) {
 	mw := &messageWriter{w: w}
-	mw.writeMessage(m)
-	return mw.n, mw.err
+
+	if m.shallEncrypt() {
+		messageEncryptionWriter := &messageWriter{w: m.encryptionWriter}
+		// create encryption stream
+		if n, encErr := messageEncryptionWriter.writeMessage(m); encErr != nil {
+			return n, encErr
+		}
+
+		// create envelope
+		envelope := NewMessage()
+		envelope.SetHeaders(m.header)
+		envelope.SetBody(
+			"multipart/encrypted",
+			m.encryptionWriter.String(),
+		)
+		envelope.SetEncryptionEnvelope(m.encryptionProtocol)
+
+		return mw.writeMessage(envelope)
+	}
+
+	return mw.writeMessage(m)
 }
 
-func (w *messageWriter) writeMessage(m *Message) {
+func (w *messageWriter) writeMessage(m *Message) (int64, error) {
 	if _, ok := m.header["MIME-Version"]; !ok {
 		w.writeString("MIME-Version: 1.0\r\n")
 	}
@@ -26,6 +46,16 @@ func (w *messageWriter) writeMessage(m *Message) {
 		w.writeHeader("Date", m.FormatDate(now()))
 	}
 	w.writeHeaders(m.header)
+
+	if m.isEncryptionEnvelope() {
+		mime := fmt.Sprintf("encrypted;\r\nprotocol=\"%s\"", m.encryptionProtocol)
+		w.openMultipart(mime, m.boundary)
+		for _, part := range m.parts {
+			w.writePart(part, m.charset)
+		}
+		w.closeMultipart()
+		return w.n, w.err
+	}
 
 	if m.hasMixedPart() {
 		w.openMultipart("mixed", m.boundary)
@@ -54,6 +84,8 @@ func (w *messageWriter) writeMessage(m *Message) {
 	if m.hasMixedPart() {
 		w.closeMultipart()
 	}
+
+	return w.n, w.err
 }
 
 func (m *Message) hasMixedPart() bool {
@@ -66,6 +98,14 @@ func (m *Message) hasRelatedPart() bool {
 
 func (m *Message) hasAlternativePart() bool {
 	return len(m.parts) > 1
+}
+
+func (m *Message) shallEncrypt() bool {
+	return m.encryption
+}
+
+func (m *Message) isEncryptionEnvelope() bool {
+	return m.encryptionEnvelope
 }
 
 type messageWriter struct {

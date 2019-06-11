@@ -8,19 +8,28 @@ import (
 	"time"
 )
 
-// Message represents an email.
-type Message struct {
-	header      header
-	parts       []*part
-	attachments []*file
-	embedded    []*file
-	charset     string
-	encoding    Encoding
-	hEncoder    mimeEncoder
-	buf         bytes.Buffer
-	boundary    string
+type MessageEncryptor interface {
+	io.WriterTo
+	io.Writer
+	String() string
 }
 
+// Message represents an email.
+type Message struct {
+	header             header
+	parts              []*part
+	attachments        []*file
+	embedded           []*file
+	charset            string
+	encoding           Encoding
+	hEncoder           mimeEncoder
+	buf                bytes.Buffer
+	boundary           string
+	encryption         bool
+	encryptionProtocol string
+	encryptionWriter   MessageEncryptor
+	encryptionEnvelope bool
+}
 type header map[string][]string
 
 type part struct {
@@ -356,4 +365,15 @@ func (m *Message) appendFile(list []*file, f *file, settings []FileSetting) []*f
 	}
 
 	return append(list, f)
+}
+
+func (m *Message) SetEnryption(protocol string, enc MessageEncryptor) {
+	m.encryption = true
+	m.encryptionWriter = enc
+	m.encryptionProtocol = protocol
+}
+
+func (m *Message) SetEncryptionEnvelope(protocol string) {
+	m.encryptionEnvelope = true
+	m.encryptionProtocol = protocol
 }
