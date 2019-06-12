@@ -16,19 +16,29 @@ type MessageEncryptor interface {
 
 // Message represents an email.
 type Message struct {
-	header             header
-	parts              []*part
-	attachments        []*file
-	embedded           []*file
-	charset            string
-	encoding           Encoding
-	hEncoder           mimeEncoder
-	buf                bytes.Buffer
-	boundary           string
-	encryption         bool
-	encryptionProtocol string
-	encryptionWriter   MessageEncryptor
-	encryptionEnvelope bool
+	header      header
+	parts       []*part
+	attachments []*file
+	embedded    []*file
+	charset     string
+	encoding    Encoding
+	hEncoder    mimeEncoder
+	buf         bytes.Buffer
+	boundary    string
+
+	// rfc1847 support
+	encrypted              bool // indicates an encrypted email in format rfc1847
+	signed                 bool // indicates an signed email in format rfc1847
+	protocol               string
+	protectionType         string
+	protectionPartSettings PartSetting
+	controlBody            string
+
+	protectedPart *part
+	controlPart   *part
+
+	protocolWriter MessageEncryptor
+	// encryptionEnvelope bool
 }
 type header map[string][]string
 
@@ -116,6 +126,10 @@ func (m *Message) SetBoundary(boundary string) {
 func (m *Message) SetHeader(field string, value ...string) {
 	m.encodeHeader(value)
 	m.header[field] = value
+}
+
+func (m *Message) SetProtocol(protocol string) {
+	m.protocol = protocol
 }
 
 func (m *Message) encodeHeader(values []string) {
@@ -219,17 +233,29 @@ func (m *Message) AddAlternative(contentType, body string, settings ...PartSetti
 	m.AddAlternativeWriter(contentType, newCopier(body), settings...)
 }
 
+// AddAlternativeWriter adds an alternative part to the message. It can be
+// useful with the text/template or html/template packages.
+func (m *Message) AddAlternativeWriter(contentType string, f func(io.Writer) error, settings ...PartSetting) {
+	m.parts = append(m.parts, m.newPart(contentType, f, settings))
+}
+
+// AddPart adds a part to a multipart message. It is more a more low level
+// approach to work closer to the real email structure.
+func (m *Message) AddPart(contentType, content string, settings ...PartSetting) {
+	m.AddPartWriter(contentType, newCopier(content), settings...)
+}
+
+// AddPartWriter adds a part to a multipart message. Is is a more low level
+// approach to work close to the real email structre.
+func (m *Message) AddPartWriter(contentType string, f func(io.Writer) error, settings ...PartSetting) {
+	m.parts = append(m.parts, m.newPart(contentType, f, settings))
+}
+
 func newCopier(s string) func(io.Writer) error {
 	return func(w io.Writer) error {
 		_, err := io.WriteString(w, s)
 		return err
 	}
-}
-
-// AddAlternativeWriter adds an alternative part to the message. It can be
-// useful with the text/template or html/template packages.
-func (m *Message) AddAlternativeWriter(contentType string, f func(io.Writer) error, settings ...PartSetting) {
-	m.parts = append(m.parts, m.newPart(contentType, f, settings))
 }
 
 func (m *Message) newPart(contentType string, f func(io.Writer) error, settings []PartSetting) *part {
@@ -367,13 +393,31 @@ func (m *Message) appendFile(list []*file, f *file, settings []FileSetting) []*f
 	return append(list, f)
 }
 
-func (m *Message) SetEnryption(protocol string, enc MessageEncryptor) {
-	m.encryption = true
-	m.encryptionWriter = enc
-	m.encryptionProtocol = protocol
+func (m *Message) SetEncrypted(protocol, protectionType, controlBody string, protocolWriter MessageEncryptor) {
+	if m.signed == true {
+		m.signed = false
+	}
+	m.encrypted = true
+	m.protocol = protocol
+	m.protocolWriter = protocolWriter
+	m.protectionType = protectionType
+	m.controlBody = controlBody
 }
 
-func (m *Message) SetEncryptionEnvelope(protocol string) {
-	m.encryptionEnvelope = true
-	m.encryptionProtocol = protocol
+func (m *Message) SetSigned(protocol, protectionType string, protocolWriter MessageEncryptor) {
+	if m.encrypted == true {
+		m.encrypted = false
+	}
+	m.signed = true
+	m.protocol = protocol
+	m.protocolWriter = protocolWriter
+	m.protectionType = protectionType
+}
+
+func (m *Message) SetProtectedPart(contentType, body string, settings ...PartSetting) {
+	m.protectedPart = m.newPart(contentType, newCopier(body), settings)
+}
+
+func (m *Message) SetControlPart(contentType, body string, settings ...PartSetting) {
+	m.controlPart = m.newPart(contentType, newCopier(body), settings)
 }

@@ -16,9 +16,10 @@ import (
 func (m *Message) WriteTo(w io.Writer) (n int64, err error) {
 	mw := &messageWriter{w: w}
 
-	if m.shallEncrypt() {
-		messageEncryptionWriter := &messageWriter{w: m.encryptionWriter}
-		// create encryption stream
+	if m.isSecuredMIME() {
+		messageEncryptionWriter := &messageWriter{w: m.protocolWriter}
+
+		// create encrypted stream
 		if n, encErr := messageEncryptionWriter.writeMessage(m); encErr != nil {
 			return n, encErr
 		}
@@ -26,11 +27,21 @@ func (m *Message) WriteTo(w io.Writer) (n int64, err error) {
 		// create envelope
 		envelope := NewMessage()
 		envelope.SetHeaders(m.header)
-		envelope.SetBody(
-			"multipart/encrypted",
-			m.encryptionWriter.String(),
-		)
-		envelope.SetEncryptionEnvelope(m.encryptionProtocol)
+
+		// var protectedContentType string
+		// switch{
+		// case m.isEncrypted():
+		// 	protectedContentType = "multipart/encrypted"
+		// case m.isSigned():
+		// 	protectedContentType = "multipart/signed"
+		// default:
+		// 	return 0, fmt.Errorf("is secured but not signed or encrypted")
+		// }
+
+		// envelope.SetHeader("Content-Type", protectedContentType)
+		envelope.SetProtocol(m.protocol)
+		envelope.SetControlPart(m.protocol, m.controlBody)
+		envelope.SetProtectedPart(m.protectionType, m.protocolWriter.String())
 
 		return mw.writeMessage(envelope)
 	}
@@ -47,12 +58,13 @@ func (w *messageWriter) writeMessage(m *Message) (int64, error) {
 	}
 	w.writeHeaders(m.header)
 
-	if m.isEncryptionEnvelope() {
-		mime := fmt.Sprintf("encrypted;\r\nprotocol=\"%s\"", m.encryptionProtocol)
+	if m.isSetProtocol() && !m.isSecuredMIME() { // fetch the enveloped case
+		mime := fmt.Sprintf("encrypted;\r\n protocol=\"%s\"", m.protocol)
 		w.openMultipart(mime, m.boundary)
-		for _, part := range m.parts {
-			w.writePart(part, m.charset)
-		}
+
+		w.writePart(m.controlPart, m.charset)
+		w.writePart(m.protectedPart, m.charset)
+
 		w.closeMultipart()
 		return w.n, w.err
 	}
@@ -100,12 +112,20 @@ func (m *Message) hasAlternativePart() bool {
 	return len(m.parts) > 1
 }
 
-func (m *Message) shallEncrypt() bool {
-	return m.encryption
+func (m *Message) isSecuredMIME() bool {
+	return m.encrypted || m.signed
 }
 
-func (m *Message) isEncryptionEnvelope() bool {
-	return m.encryptionEnvelope
+func (m *Message) isEncrypted() bool {
+	return m.encrypted
+}
+
+func (m *Message) isSigned() bool {
+	return m.signed
+}
+
+func (m *Message) isSetProtocol() bool {
+	return m.protocol != ""
 }
 
 type messageWriter struct {

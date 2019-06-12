@@ -165,7 +165,7 @@ const (
 	// SMTP transactions are aborted unless STARTTLS is supported by the
 	// SMTP server.
 	MandatoryStartTLS
-	// NoStartTLS means encryption is disabled and messages are sent in the
+	// NoStartTLS means encrypted is disabled and messages are sent in the
 	// clear.
 	NoStartTLS = -1
 )

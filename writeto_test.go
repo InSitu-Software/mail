@@ -8,6 +8,8 @@ import (
 	"strings"
 	"testing"
 	"unicode/utf8"
+
+	"golang.org/x/crypto/openpgp/armor"
 )
 
 type rot13 struct {
@@ -29,7 +31,18 @@ func rotStringN(s string, shift int32) string {
 }
 
 func (r *rot13) String() string {
-	return r.EncryptedMessage.String()
+	var b bytes.Buffer
+	w, err := armor.Encode(&b, "ROT13 MESSAGE", nil)
+	if err != nil {
+		return ""
+	}
+	defer w.Close()
+
+	if _, err := w.Write([]byte(r.EncryptedMessage.String())); err != nil {
+		return ""
+	}
+
+	return b.String()
 }
 
 func (r *rot13) Write(b []byte) (n int, err error) {
@@ -103,7 +116,12 @@ func TestWriteTo(t *testing.T) {
 		PlainMessage: secretMail,
 	}
 
-	secretMail.SetEnryption("application/pgp-encrypted", &rot)
+	secretMail.SetEncrypted(
+		"application/rot13-encrypted",
+		"application/octet-stream",
+		"Version: 1",
+		&rot,
+	)
 
 	var out bytes.Buffer
 	if _, err := secretMail.WriteTo(&out); err != nil {
