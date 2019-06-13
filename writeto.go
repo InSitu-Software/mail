@@ -17,31 +17,28 @@ func (m *Message) WriteTo(w io.Writer) (n int64, err error) {
 	mw := &messageWriter{w: w}
 
 	if m.isSecuredMIME() {
-		messageEncryptionWriter := &messageWriter{w: m.protocolWriter}
+		// var b bytes.Buffer
+		messageEncryptionWriter := &messageWriter{w: m.protectionWriter}
 
 		// create encrypted stream
 		if n, encErr := messageEncryptionWriter.writeMessage(m); encErr != nil {
 			return n, encErr
 		}
+		// wt, _ := pgp.Encrypt(&b, []string{"foo@bar.de"}, mockPublicProvider)
+		// wt.WriteTo(os.Stdout)
+
+		s, err := m.protectionWriter.GetEncryptedString()
+		if err != nil {
+			return 0, err
+		}
+		fmt.Println(s)
 
 		// create envelope
 		envelope := NewMessage()
 		envelope.SetHeaders(m.header)
-
-		// var protectedContentType string
-		// switch{
-		// case m.isEncrypted():
-		// 	protectedContentType = "multipart/encrypted"
-		// case m.isSigned():
-		// 	protectedContentType = "multipart/signed"
-		// default:
-		// 	return 0, fmt.Errorf("is secured but not signed or encrypted")
-		// }
-
-		// envelope.SetHeader("Content-Type", protectedContentType)
 		envelope.SetProtocol(m.protocol)
 		envelope.SetControlPart(m.protocol, m.controlBody)
-		envelope.SetProtectedPart(m.protectionType, m.protocolWriter.String())
+		envelope.SetProtectedPart(m.protectionType, s)
 
 		return mw.writeMessage(envelope)
 	}

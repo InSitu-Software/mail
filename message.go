@@ -8,10 +8,11 @@ import (
 	"time"
 )
 
+// MessageEncryptor is the interface for any encryption
+// that should be performed for an email content
 type MessageEncryptor interface {
-	io.WriterTo
 	io.Writer
-	String() string
+	GetEncryptedString() (string, error)
 }
 
 // Message represents an email.
@@ -32,13 +33,11 @@ type Message struct {
 	protocol               string
 	protectionType         string
 	protectionPartSettings PartSetting
+	protectionWriter       MessageEncryptor
 	controlBody            string
 
 	protectedPart *part
 	controlPart   *part
-
-	protocolWriter MessageEncryptor
-	// encryptionEnvelope bool
 }
 type header map[string][]string
 
@@ -399,7 +398,7 @@ func (m *Message) SetEncrypted(protocol, protectionType, controlBody string, pro
 	}
 	m.encrypted = true
 	m.protocol = protocol
-	m.protocolWriter = protocolWriter
+	m.protectionWriter = protocolWriter
 	m.protectionType = protectionType
 	m.controlBody = controlBody
 }
@@ -410,7 +409,7 @@ func (m *Message) SetSigned(protocol, protectionType string, protocolWriter Mess
 	}
 	m.signed = true
 	m.protocol = protocol
-	m.protocolWriter = protocolWriter
+	m.protectionWriter = protocolWriter
 	m.protectionType = protectionType
 }
 
