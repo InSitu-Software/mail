@@ -1,22 +1,30 @@
 # Gomail
+
+This is a fork of [the actively maintained for of Gomail][1]. We needed support for [RFC3156][5]  and [RFC1847][6]
+styled emails. 
+
+
 [![Build Status](https://travis-ci.org/go-mail/mail.svg?branch=master)](https://travis-ci.org/go-mail/mail) [![Code Coverage](http://gocover.io/_badge/github.com/go-mail/mail)](http://gocover.io/github.com/go-mail/mail) [![Documentation](https://godoc.org/github.com/go-mail/mail?status.svg)](https://godoc.org/github.com/go-mail/mail)
 
-This is an actively maintained fork of [Gomail][1] and includes fixes and
+This is an actively maintained fork of [Gomail][2] and includes fixes and
 improvements for a number of outstanding issues. The current progress is
 as follows:
 
  - [x] Timeouts and retries can be specified outside of the 10 second default.
- - [x] Proxying is supported through specifying a custom [NetDialTimeout][2].
+ - [x] Proxying is supported through specifying a custom [NetDialTimeout][3].
  - [ ] Filenames are properly encoded for non-ASCII characters.
  - [ ] Email addresses are properly encoded for non-ASCII characters.
  - [ ] Embedded files and attachments are tested for their existence.
  - [ ] An `io.Reader` can be supplied when embedding and attaching files.
 
-See [Transitioning Existing Codebases][3] for more information on switching.
+See [Transitioning Existing Codebases][4] for more information on switching.
 
-[1]: https://github.com/go-gomail/gomail
-[2]: https://godoc.org/gopkg.in/mail.v2#NetDialTimeout
-[3]: #transitioning-existing-codebases
+[1]: https://github.com/go-mail/mail
+[2]: https://github.com/go-gomail/gomail
+[3]: https://godoc.org/gopkg.in/mail.v2#NetDialTimeout
+[4]: #transitioning-existing-codebases
+[5]: https://tools.ietf.org/html/rfc3156
+[6]: https://tools.ietf.org/html/rfc1847
 
 ## Introduction
 
