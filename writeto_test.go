@@ -9,6 +9,7 @@ import (
 	"testing"
 	"unicode/utf8"
 
+	"gitlab.insitu.de/golang/pgpmaildriver"
 	"golang.org/x/crypto/openpgp/armor"
 )
 
@@ -302,7 +303,7 @@ func TestWriteTo(t *testing.T) {
 	secretMail.SetHeader("Subject", "my secret mail subject")
 	secretMail.SetBody("text/plain", "my darkest secret is *#12!4//(+")
 
-	pgpWriter := PGPMessageEncryptor{
+	pgpWriter := pgpmaildriver.PGPMessageEncryptor{
 		KeyProvider: mockPublicProvider,
 		To:          to,
 	}

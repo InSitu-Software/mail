@@ -2,6 +2,7 @@ github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/DATA-DOG/go-sqlmock v1.3.3 h1:CWUqKXe0s8A2z6qCgkP4Kru7wC11YoAnoupUKFDnH08=
 github.com/DATA-DOG/go-sqlmock v1.3.3/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
+github.com/InSitu-Software/mail v2.3.2-0.20190612112648-5283f9d65ddb+incompatible/go.mod h1:d7Mqc33nqAjYsDtSf1p2pzgSZptiQazdiI8K7YXljKA=
 github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6/go.mod h1:grANhF5doyWs3UAsr3K4I6qtAmlQcZDesFNEHPZAzj8=
 github.com/cockroachdb/apd v1.1.0/go.mod h1:8Sl8LxpKi29FqWXR16WEFZRNSz3SoPzUzeMeY4+DwBQ=
 github.com/coreos/etcd v3.3.10+incompatible/go.mod h1:uF7uidLiAD3TWHmW31ZFd/JWoc32PjwdhPthX9715RE=
@@ -60,8 +61,11 @@ github.com/vincent-petithory/dataurl v0.0.0-20160330182126-9a301d65acbb/go.mod h
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 gitlab.insitu.de/golang/database v1.1.2 h1:h3su9w2PvhoF4tQ3QcJ4uqXomz450D3na8Wg8hP2gaM=
 gitlab.insitu.de/golang/database v1.1.2/go.mod h1:BtFvqYlvRkS3J5ErgWQV1S+HSFfxfu0mqxKAPin1q7Y=
+gitlab.insitu.de/golang/pgp v0.0.0-20190612124040-878b8ed376c6/go.mod h1:bY1qVfMDKJ/atuA44A5Jxp9p6DTa6GpRRG7s7kpuDOE=
 gitlab.insitu.de/golang/pgp v0.0.0-20190612130905-a45e432a65d2 h1:DENIsBabHHSsD+M7fjePTY57UoW+Br/EDTmhbskY/DU=
 gitlab.insitu.de/golang/pgp v0.0.0-20190612130905-a45e432a65d2/go.mod h1:7/JKpjTtwYfGFXsBeviKDFU82ZBHCx0IkR4oXjYscCg=
+gitlab.insitu.de/golang/pgpmaildriver v0.0.0-20190613112150-96a316ab316a h1:5ikq2JpWS8F4yYSxn5eTpTzsTQ7tnL896NEY+TN3vFA=
+gitlab.insitu.de/golang/pgpmaildriver v0.0.0-20190613112150-96a316ab316a/go.mod h1:/rkLXXSTScaU3nO/BIksk0ydk9bB1TB/GsMbCT8rbug=
 golang.org/x/crypto v0.0.0-20180904163835-0709b304e793/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
