@@ -1,4 +1,4 @@
-module github.com/InSitu-Software/mail
+module github.com/InSitu-Software/mail/v2
 
 go 1.12
 
