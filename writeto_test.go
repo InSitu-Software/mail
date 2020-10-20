@@ -9,7 +9,7 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	"gitlab.insitu.de/golang/pgpmaildriver"
+	"github.com/InSitu-Software/pgpmaildriver"
 	"golang.org/x/crypto/openpgp/armor"
 )
 
