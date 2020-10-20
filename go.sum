@@ -1,3 +1,11 @@
+github.com/InSitu-Software/pgp v0.2.1 h1:Q8urI/yRLz1DAOJAH92ghjTVm9TT2/jpac/RAFd+f0w=
+github.com/InSitu-Software/pgp v0.2.1/go.mod h1:VWNDCfXPhh4EpuG/LSHlbM3LL0DzHbAK05dUIBas+NI=
+github.com/InSitu-Software/pgp v0.2.2-0.20200928111036-62f71d810e5a h1:7yLyr3uer1i5NVTJ8AjQdNjQnxYQ3KhbSymGNQamO/U=
+github.com/InSitu-Software/pgp v0.2.2-0.20200928111036-62f71d810e5a/go.mod h1:w4BscfGQI+gTd2wIHbqCPOljCAlQe+1iPozCFyhdZD0=
+github.com/InSitu-Software/pgpmaildriver v0.0.2 h1:6QfdfZpHjTXvr7A6IrHBIiaNjg9pclSVQU5KOMx0jX4=
+github.com/InSitu-Software/pgpmaildriver v0.0.2/go.mod h1:zjVhx39sy9aFQuvpYFHrXfz3aN2chx0oH4lzmJhYi1w=
+github.com/InSitu-Software/pgpmaildriver v0.0.3-0.20200928111645-625c3eb70c9c h1:v01WNQWCUf4JapVxao09lYj1DtNzQMyQ+CtmJ+w1mas=
+github.com/InSitu-Software/pgpmaildriver v0.0.3-0.20200928111645-625c3eb70c9c/go.mod h1:hdPBPEX4JxVWUXLcRecVg2WYoX1th7Q66fSooKI7Szo=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
@@ -6,10 +14,6 @@ github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZN
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-gitlab.insitu.de/golang/pgp v0.2.1 h1:Q8urI/yRLz1DAOJAH92ghjTVm9TT2/jpac/RAFd+f0w=
-gitlab.insitu.de/golang/pgp v0.2.1/go.mod h1:VWNDCfXPhh4EpuG/LSHlbM3LL0DzHbAK05dUIBas+NI=
-gitlab.insitu.de/golang/pgpmaildriver v0.0.2 h1:6QfdfZpHjTXvr7A6IrHBIiaNjg9pclSVQU5KOMx0jX4=
-gitlab.insitu.de/golang/pgpmaildriver v0.0.2/go.mod h1:zjVhx39sy9aFQuvpYFHrXfz3aN2chx0oH4lzmJhYi1w=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20200117160349-530e935923ad h1:Jh8cai0fqIK+f6nG0UgPW5wFk8wmiMhM3AyciDBdtQg=
 golang.org/x/crypto v0.0.0-20200117160349-530e935923ad/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
